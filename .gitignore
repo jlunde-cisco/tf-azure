@@ -5,7 +5,7 @@
 *.tfstate
 *.tfstate.*
 *.txt
-id_rsa.pub
+*.pub
 # Crash log files
 crash.log
 crash.*.log
