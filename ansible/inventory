@@ -1,0 +1,7 @@
+[frontend]
+frontend1 ansible_host=104.211.35.2 ansible_ssh_user=adminuser private_ip=10.0.2.6
+frontend2 ansible_host=104.211.32.125 ansible_ssh_user=adminuser private_ip=10.0.2.7
+
+[backend]
+backend1 ansible_host=104.211.35.181 ansible_ssh_user=adminuser private_ip=10.0.2.4
+backend2 ansible_host=104.211.43.207 ansible_ssh_user=adminuser private_ip=10.0.2.5

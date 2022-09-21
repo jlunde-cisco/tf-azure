@@ -1,0 +1,5 @@
+---
+frontend2.private_ip: 8080
+frontend1.private_ip: 2192
+backend1.private_ip: 3307
+backend2.private_ip: 3306

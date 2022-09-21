@@ -1,0 +1,6 @@
+SHELL=/bin/bash
+* * * * * /usr/bin/iperf3 -c 10.0.2.6 -p 2192 -t 20
+* * * * * sleep $(( RANDOM \% 600 )) ; /usr/bin/iperf3 -c 10.0.2.6 -p 8080 -t 25
+* * * * * sleep $(( RANDOM \% 600 )) ; /usr/bin/iperf3 -c 10.0.2.4 -p 3307 -t 30
+* * * * * sleep $(( RANDOM \% 600 )) ; /usr/bin/iperf3 -c 10.0.2.5 -p 3306 -t 30
+

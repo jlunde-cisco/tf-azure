@@ -1,0 +1,103 @@
+---
+ - name: Playbook to install Apache
+   hosts: all
+   become: true
+   tasks:
+    
+    - name: Update the repository cache and install iperf3 ant net-tools
+      ansible.builtin.apt:
+        name:
+          - iperf3
+          - net-tools
+          - nmap
+        state: latest
+        update_cache: yes
+
+    - name: Create service files for iperf3 
+      ansible.builtin.template:
+        src: templates/iperf.service.j2
+        dest: /etc/systemd/system/iperf-{{ item }}.service
+      loop: "{{ provided_ports }}"
+
+    - name: Just force systemd to reread configs (2.4 and above)
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: Turn that shit onnnnnnn
+      ansible.builtin.systemd:
+        name: iperf-{{ item }}.service
+        enabled: yes
+        state: started
+      loop: "{{ provided_ports }}"
+    
+    - name: Cron env variable
+      ansible.builtin.cron:
+        name: SHELL
+        env: yes
+        job: /bin/bash
+
+    - name: Cron set jobs
+      ansible.builtin.cron:
+        name: SHELL
+        env: yes
+        job: /bin/bash
+
+    - name: Cron set jobs 2192
+      ansible.builtin.cron:
+        name: "Job 2192"
+        job: /usr/bin/iperf3 -c {{ hostvars['frontend2'].private_ip }} -p 2192 -t 20
+      when: inventory_hostname == 'frontend1'
+
+    - name: Cron set jobs 2192
+      ansible.builtin.cron:
+        name: "Job 2192"
+        job: /usr/bin/iperf3 -c {{ hostvars['frontend1'].private_ip }} -p 2192 -t 20
+      when: inventory_hostname == 'frontend2'
+
+    - name: Cron set jobs 8080
+      ansible.builtin.cron:
+        name: "Job 8080"
+        job: sleep $(( RANDOM \% 600 )) ; /usr/bin/iperf3 -c {{ hostvars['frontend2'].private_ip }} -p 8080 -t 25
+      when: inventory_hostname == 'frontend1'
+
+    - name: Cron set jobs 8080
+      ansible.builtin.cron:
+        name: "Job 8080"
+        job: sleep $(( RANDOM \% 600 )) ; /usr/bin/iperf3 -c {{ hostvars['frontend1'].private_ip }} -p 8080 -t 25
+      when: inventory_hostname == 'frontend2'
+
+    - name: Cron set jobs 3306
+      ansible.builtin.cron:
+        name: "Job 3306"
+        job: sleep $(( RANDOM \% 600 )) ; /usr/bin/iperf3 -c {{ hostvars['backend1'].private_ip }} -p 3306 -t 30
+      when: inventory_hostname == 'frontend1'
+
+    - name: Cron set jobs 3306
+      ansible.builtin.cron:
+        name: "Job 3306"
+        job: sleep $(( RANDOM \% 600 )) ; /usr/bin/iperf3 -c {{ hostvars['backend2'].private_ip }} -p 3306 -t 30
+      when: inventory_hostname == 'frontend2'
+
+    - name: Cron set jobs 3307
+      ansible.builtin.cron:
+        name: "Job 3307"
+        job: sleep $(( RANDOM \% 600 )) ; /usr/bin/iperf3 -c {{ hostvars['backend2'].private_ip }} -p 3307 -t 30
+      when: inventory_hostname == 'frontend1'
+
+    - name: Cron set jobs 3307
+      ansible.builtin.cron:
+        name: "Job 3307"
+        job: sleep $(( RANDOM \% 600 )) ; /usr/bin/iperf3 -c {{ hostvars['backend1'].private_ip }} -p 3307 -t 30
+      when: inventory_hostname == 'frontend2'
+
+    - name: Cron set jobs 2193
+      ansible.builtin.cron:
+        name: "Job 2193"
+        job: sleep $(( RANDOM \% 600 )) ; /usr/bin/iperf3 -c {{ hostvars['backend2'].private_ip }} -p 2193 -t 30
+      when: inventory_hostname == 'backend1'
+
+    - name: Cron set jobs 2193
+      ansible.builtin.cron:
+        name: "Job 2193"
+        job: sleep $(( RANDOM \% 600 )) ; /usr/bin/iperf3 -c {{ hostvars['backend1'].private_ip }} -p 2193 -t 30
+      when: inventory_hostname == 'backend2'

@@ -1,0 +1,10 @@
+[Unit]
+Description=iperf3 server port {{ item }}
+
+[Service]
+ExecStart=/usr/bin/iperf3 -s -D -p {{ item }} -4
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

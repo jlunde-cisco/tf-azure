@@ -1,0 +1,4 @@
+---
+front_peer: frontend2
+backend1.private_ip: 3306
+backend2.private_ip: 3307
